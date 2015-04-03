@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "name": "DIVOLTE",
+  "version": "0.2",
+  "setActiveSymlink": true,
+  "depends": "",
+  "replaces": "DIVOLTE",
+  "conflicts": "",
+  "provides": [
+    "divolte"
+  ],
+
+  "scripts": {
+    "defines": "divolte_env.sh"
+  },
+
+  "packages": [
+    { "name"   : "divolte-collector",
+      "version": "0.2"
+    }
+  ],
+
+  "components": [
+    { "name"       : "divolte",
+      "version"    : "0.2-SNAPSHOT",
+      "pkg_version": "0.2-SNAPSHOT"
+    }
+  ],
+
+  "users": {
+    "divolte": {
+      "longname"    : "Divolte",
+      "home"        : "/home/divolte",
+      "shell"       : "/bin/bash",
+      "extra_groups": [ "hadoop" ]
+    }
+  },
+
+  "groups": [
+    "hadoop"
+  ]
+}

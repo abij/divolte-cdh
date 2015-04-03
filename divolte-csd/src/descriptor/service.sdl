@@ -1,0 +1,92 @@
+{
+  "name" : "DIVOLTE",
+  "label" : "Divolte collector",
+  "description" : "Service to store generated clickstream-data efficiently on HDFS.",
+  "version" : "1.0",
+  "runAs" : {
+    "user" : "divolte",
+    "group" : "divolte"
+  },
+  "inExpressWizard" : true,
+  "icon" : "images/icon.png",
+  "parcel" : {
+    /* Automatically add the divolte parcel repository */
+    "repoUrl" : "http://archive.godatadriven.com/divolte/parcels/latest/",
+    "requiredTags" : ["divolte"]
+  },
+  "serviceDependencies" : [
+    {
+      "name" : "HDFS",
+      "required" : "true"
+    }
+  ],
+  "hdfsDirs" : [
+    {
+      "name" : "CreateDivolteUserDirCommand",
+      "label" : "Create Divolte User Dir",
+      "description" : "Creates the Divolte user directory in HDFS.",
+      "directoryDescription" : "Divolte HDFS user directory",
+      "path" : "/user/${user}",
+      "permissions" : "0751"
+    }
+  ],
+  "serviceInit" : {
+    "preStartSteps" : [
+      { "commandName" : "CreateDivolteUserDirCommand" }
+    ]
+  },
+  "parameters" : [
+    {
+      "name" : "divolte_hdfs_working_dir",
+      "label" : "Divolte HDFS working directory",
+      "description" : "The HDFS location where Divolte stores working data",
+      "configName" : "divolte.working.dfs.dir",
+      "type" : "path",
+      "default" : "/user/divolte/working",
+      "required" : "true",
+      "pathType" : "localDataDir",
+      "configurableInWizard" : true
+    },
+    {
+      "name" : "divolte_hdfs_publish_dir",
+      "label" : "Divolte HDFS publish directory",
+      "description" : "The HDFS location where Divolte stores published data",
+      "configName" : "divolte.publish.dfs.dir",
+      "type" : "path",
+      "default" : "/user/divolte/publish",
+      "required" : "true",
+      "pathType" : "localDataDir",
+      "configurableInWizard" : true
+    }
+  ],
+  "roles" : [
+    {
+      "name" : "DIVOLTE_COLLECTOR",
+      "label" : "Divolte Collector",
+      "pluralLabel" : "Divolte Collectors",
+      "startRunner" : {
+        "program" : "scripts/control.sh",
+        "args" : [ "start_collector" ]
+      },
+      "topology" : { "minInstances" : "1"},
+      "logging" : {
+         "dir" : "/var/log/divolte",
+         "filename" : "divolte-${host}.log",
+         "configName" : "log.dir",
+         "modifiable" : true,
+         "loggingType" : "log4j"
+      },
+      "parameters" : [
+        {
+          "name" : "divolte_port",
+          "label" : "Divolte Collector Port",
+          "description" : "Port number on which divolte collector can receive clickstream events",
+          "configName" : "divolte.port",
+          "required" : "true",
+          "type" : "port",
+          "default" : 8290
+        }
+      ]
+    }
+  ]
+}
